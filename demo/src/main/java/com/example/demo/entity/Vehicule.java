@@ -5,7 +5,9 @@ import com.example.demo.enums.StatutVehicule;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.*;
 
 @Entity
@@ -41,7 +43,7 @@ public class Vehicule {
         name = "vehicule_equipement",
         joinColumns = @JoinColumn(name = "vehicule_id"),
         inverseJoinColumns = @JoinColumn(name = "equipement_id"))
-    private List<Equipement> equipements = new ArrayList<>();
+    private Set<Equipement> equipements = new HashSet<>();
 
     @OneToMany(mappedBy = "vehicule")
     private List<Reservation> reservations = new ArrayList<>();

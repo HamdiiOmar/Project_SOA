@@ -1,8 +1,8 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.*;
 
 @Entity
@@ -16,5 +16,5 @@ public class Equipement {
     private String libelle;
 
     @ManyToMany(mappedBy = "equipements")
-    private List<Vehicule> vehicules = new ArrayList<>();
+    private Set<Vehicule> vehicules = new HashSet<>();
 }
