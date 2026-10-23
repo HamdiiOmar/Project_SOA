@@ -1,7 +1,7 @@
 package com.example.demo.service.implementation;
 
 import com.example.demo.entity.Vehicule;
-import com.example.demo.repository.VehiculeRepository;
+import com.example.demo.repository.IVehiculeRepository;
 import com.example.demo.service.VehiculeService;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
@@ -12,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class VehiculeServiceImpl implements VehiculeService {
 
-    private final VehiculeRepository vehiculeRepository;
+    private final IVehiculeRepository vehiculeRepository;
 
-    public VehiculeServiceImpl(VehiculeRepository vehiculeRepository) {
+    public VehiculeServiceImpl(IVehiculeRepository vehiculeRepository) {
         this.vehiculeRepository = vehiculeRepository;
     }
 
