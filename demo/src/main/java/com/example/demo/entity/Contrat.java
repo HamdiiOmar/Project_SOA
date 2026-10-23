@@ -22,8 +22,7 @@ public class Contrat {
 
     private boolean valide;
 
-    @OneToOne
-    @JoinColumn(name = "reservation_id")
+    @OneToOne(mappedBy = "contrat")
     private Reservation reservation;
 
     // Composition: payments belong to the contract

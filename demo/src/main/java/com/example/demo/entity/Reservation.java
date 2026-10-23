@@ -27,6 +27,7 @@ public class Reservation {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToOne(mappedBy = "reservation")
+    @OneToOne
+    @JoinColumn(name = "contrat_id")
     private Contrat contrat;
 }
