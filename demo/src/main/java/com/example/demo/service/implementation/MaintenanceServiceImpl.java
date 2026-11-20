@@ -1,8 +1,10 @@
 package com.example.demo.service.implementation;
 
 import com.example.demo.entity.Maintenance;
+import com.example.demo.entity.Vehicule;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.IMaintenanceRepository;
+import com.example.demo.repository.IVehiculeRepository;
 import com.example.demo.service.IMaintenanceService;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -13,9 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class MaintenanceServiceImpl implements IMaintenanceService {
 
     private final IMaintenanceRepository maintenanceRepository;
+    private final IVehiculeRepository vehiculeRepository;
 
-    public MaintenanceServiceImpl(IMaintenanceRepository maintenanceRepository) {
+    public MaintenanceServiceImpl(IMaintenanceRepository maintenanceRepository, IVehiculeRepository vehiculeRepository) {
         this.maintenanceRepository = maintenanceRepository;
+        this.vehiculeRepository = vehiculeRepository;
     }
 
     @Override
@@ -57,6 +61,19 @@ public class MaintenanceServiceImpl implements IMaintenanceService {
             throw new ResourceNotFoundException("Maintenance", id);
         }
         maintenanceRepository.deleteById(id);
+    }
+
+    @Override
+    public Maintenance planifierMaintenance(Long vehiculeId, Maintenance maintenance) {
+        if (maintenance.getIdMaintenance() != null) {
+            throw new IllegalArgumentException("Création refusée : l'identifiant doit être null");
+        }
+        valider(maintenance);
+        Vehicule vehicule = vehiculeRepository.findById(vehiculeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicule", vehiculeId));
+        vehicule.addMaintenance(maintenance);
+        maintenanceRepository.flush();
+        return maintenance;
     }
 
     private void valider(Maintenance maintenance) {

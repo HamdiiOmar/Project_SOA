@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import com.example.demo.enums.CategorieVehicule;
 import com.example.demo.enums.StatutVehicule;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,6 +47,7 @@ public class Vehicule {
     @Enumerated(EnumType.STRING)
     private StatutVehicule statut;
 
+    @JsonIgnoreProperties({"employes", "vehicules"})
     @ManyToOne
     @JoinColumn(name = "agence_id")
     private Agence agence;
@@ -64,4 +66,24 @@ public class Vehicule {
     @JsonIgnore
     @OneToMany(mappedBy = "vehicule")
     private List<Reservation> reservations = new ArrayList<>();
+
+    public void addEquipement(Equipement equipement) {
+        equipements.add(equipement);
+        equipement.getVehicules().add(this);
+    }
+
+    public void removeEquipement(Equipement equipement) {
+        equipements.remove(equipement);
+        equipement.getVehicules().remove(this);
+    }
+
+    public void addMaintenance(Maintenance maintenance) {
+        maintenances.add(maintenance);
+        maintenance.setVehicule(this);
+    }
+
+    public void addReservation(Reservation reservation) {
+        reservations.add(reservation);
+        reservation.setVehicule(this);
+    }
 }

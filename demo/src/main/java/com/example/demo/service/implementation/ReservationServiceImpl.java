@@ -1,8 +1,12 @@
 package com.example.demo.service.implementation;
 
+import com.example.demo.entity.Client;
 import com.example.demo.entity.Reservation;
+import com.example.demo.entity.Vehicule;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.IClientRepository;
 import com.example.demo.repository.IReservationRepository;
+import com.example.demo.repository.IVehiculeRepository;
 import com.example.demo.service.IReservationService;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -13,9 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReservationServiceImpl implements IReservationService {
 
     private final IReservationRepository reservationRepository;
+    private final IClientRepository clientRepository;
+    private final IVehiculeRepository vehiculeRepository;
 
-    public ReservationServiceImpl(IReservationRepository reservationRepository) {
+    public ReservationServiceImpl(IReservationRepository reservationRepository, IClientRepository clientRepository, IVehiculeRepository vehiculeRepository) {
         this.reservationRepository = reservationRepository;
+        this.clientRepository = clientRepository;
+        this.vehiculeRepository = vehiculeRepository;
     }
 
     @Override
@@ -56,10 +64,27 @@ public class ReservationServiceImpl implements IReservationService {
     @Override
     public void deleteById(Long id) {
         Reservation existant = findById(id);
-        if (existant.getContrat() != null) {
-            existant.getContrat().setReservation(null);
-        }
+        existant.retirerContrat();
         reservationRepository.delete(existant);
+    }
+
+    @Override
+    public Reservation creerReservation(Long clientId, Long vehiculeId, Reservation reservation) {
+        if (reservation.getIdReservation() != null) {
+            throw new IllegalArgumentException("Création refusée : l'identifiant doit être null");
+        }
+        valider(reservation);
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new ResourceNotFoundException("Client", clientId));
+        Vehicule vehicule = vehiculeRepository.findById(vehiculeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicule", vehiculeId));
+        Reservation nouvelle = new Reservation();
+        nouvelle.setDateDebut(reservation.getDateDebut());
+        nouvelle.setDateFin(reservation.getDateFin());
+        nouvelle.setStatut(reservation.getStatut());
+        client.addReservation(nouvelle);
+        vehicule.addReservation(nouvelle);
+        return reservationRepository.save(nouvelle);
     }
 
     private void valider(Reservation reservation) {

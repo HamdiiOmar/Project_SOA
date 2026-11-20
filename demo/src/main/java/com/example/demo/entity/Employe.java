@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.example.demo.enums.RoleEmploye;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,6 +28,7 @@ public class Employe {
     @Enumerated(EnumType.STRING)
     private RoleEmploye role;
 
+    @JsonIgnoreProperties({"employes", "vehicules"})
     @ManyToOne
     @JoinColumn(name = "agence_id")
     private Agence agence;

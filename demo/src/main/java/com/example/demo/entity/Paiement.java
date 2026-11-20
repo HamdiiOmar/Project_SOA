@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.example.demo.enums.ModePaiement;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,6 +33,7 @@ public class Paiement {
     @Enumerated(EnumType.STRING)
     private ModePaiement modePaiement;
 
+    @JsonIgnoreProperties({"paiements", "reservation"})
     @ManyToOne
     @JoinColumn(name = "contrat_id")
     private Contrat contrat;

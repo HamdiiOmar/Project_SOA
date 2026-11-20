@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,7 +38,17 @@ public class Contrat {
     private Reservation reservation;
 
     // Composition: payments belong to the contract
-    @JsonIgnore
+    @JsonIgnoreProperties("contrat")
     @OneToMany(mappedBy = "contrat", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Paiement> paiements = new ArrayList<>();
+
+    public void addPaiement(Paiement paiement) {
+        paiements.add(paiement);
+        paiement.setContrat(this);
+    }
+
+    public void removePaiement(Paiement paiement) {
+        paiements.remove(paiement);
+        paiement.setContrat(null);
+    }
 }

@@ -14,4 +14,6 @@ public interface IReservationService {
     Reservation update(Long id, Reservation reservation);
 
     void deleteById(Long id);
+
+    Reservation creerReservation(Long clientId, Long vehiculeId, Reservation reservation);
 }

@@ -2,6 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Vehicule;
 import com.example.demo.service.IVehiculeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,5 +48,27 @@ public class VehiculeController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         vehiculeService.deleteById(id);
+    }
+
+    @Operation(summary = "Affecte un équipement à un véhicule")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Équipement affecté, véhicule renvoyé avec ses équipements"),
+            @ApiResponse(responseCode = "404", description = "Ressource introuvable"),
+            @ApiResponse(responseCode = "409", description = "Opération refusée par une règle de gestion")
+    })
+    @PostMapping("/{id}/equipements/{equipementId}")
+    public Vehicule affecterEquipement(@PathVariable Long id, @PathVariable Long equipementId) {
+        return vehiculeService.affecterEquipement(id, equipementId);
+    }
+
+    @Operation(summary = "Retire un équipement d'un véhicule (l'équipement n'est pas supprimé)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Équipement retiré"),
+            @ApiResponse(responseCode = "404", description = "Ressource introuvable"),
+            @ApiResponse(responseCode = "409", description = "Opération refusée par une règle de gestion")
+    })
+    @DeleteMapping("/{id}/equipements/{equipementId}")
+    public Vehicule desaffecterEquipement(@PathVariable Long id, @PathVariable Long equipementId) {
+        return vehiculeService.desaffecterEquipement(id, equipementId);
     }
 }

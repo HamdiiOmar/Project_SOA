@@ -31,4 +31,9 @@ public class Client {
     @JsonIgnore
     @OneToMany(mappedBy = "client")
     private List<Reservation> reservations = new ArrayList<>();
+
+    public void addReservation(Reservation reservation) {
+        reservations.add(reservation);
+        reservation.setClient(this);
+    }
 }

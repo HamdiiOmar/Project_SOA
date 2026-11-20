@@ -1,7 +1,10 @@
 package com.example.demo.service.implementation;
 
+import com.example.demo.entity.Equipement;
 import com.example.demo.entity.Vehicule;
+import com.example.demo.exception.BusinessRuleException;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.IEquipementRepository;
 import com.example.demo.repository.IVehiculeRepository;
 import com.example.demo.service.IVehiculeService;
 import java.util.List;
@@ -13,9 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class VehiculeServiceImpl implements IVehiculeService {
 
     private final IVehiculeRepository vehiculeRepository;
+    private final IEquipementRepository equipementRepository;
 
-    public VehiculeServiceImpl(IVehiculeRepository vehiculeRepository) {
+    public VehiculeServiceImpl(IVehiculeRepository vehiculeRepository, IEquipementRepository equipementRepository) {
         this.vehiculeRepository = vehiculeRepository;
+        this.equipementRepository = equipementRepository;
     }
 
     @Override
@@ -66,5 +71,32 @@ public class VehiculeServiceImpl implements IVehiculeService {
         if (vehicule.getTarifJournalier() != null && vehicule.getTarifJournalier().signum() < 0) {
             throw new IllegalArgumentException("Le tarif journalier ne peut pas être négatif");
         }
+    }
+
+    @Override
+    public Vehicule affecterEquipement(Long vehiculeId, Long equipementId) {
+        Vehicule vehicule = findById(vehiculeId);
+        Equipement equipement = chargerEquipement(equipementId);
+        if (vehicule.getEquipements().contains(equipement)) {
+            throw new BusinessRuleException("L'équipement " + equipementId + " est déjà affecté au véhicule " + vehiculeId);
+        }
+        vehicule.addEquipement(equipement);
+        return vehicule;
+    }
+
+    @Override
+    public Vehicule desaffecterEquipement(Long vehiculeId, Long equipementId) {
+        Vehicule vehicule = findById(vehiculeId);
+        Equipement equipement = chargerEquipement(equipementId);
+        if (!vehicule.getEquipements().contains(equipement)) {
+            throw new BusinessRuleException("L'équipement " + equipementId + " n'est pas affecté au véhicule " + vehiculeId);
+        }
+        vehicule.removeEquipement(equipement);
+        return vehicule;
+    }
+
+    private Equipement chargerEquipement(Long id) {
+        return equipementRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Equipement", id));
     }
 }

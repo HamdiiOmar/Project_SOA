@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,11 +26,31 @@ public class Agence {
     private String adresse;
     private String telephone;
 
-    @JsonIgnore
+    @JsonIgnoreProperties("agence")
     @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL)
     private List<Employe> employes = new ArrayList<>();
 
-    @JsonIgnore
+    @JsonIgnoreProperties("agence")
     @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL)
     private List<Vehicule> vehicules = new ArrayList<>();
+
+    public void addEmploye(Employe employe) {
+        employes.add(employe);
+        employe.setAgence(this);
+    }
+
+    public void removeEmploye(Employe employe) {
+        employes.remove(employe);
+        employe.setAgence(null);
+    }
+
+    public void addVehicule(Vehicule vehicule) {
+        vehicules.add(vehicule);
+        vehicule.setAgence(this);
+    }
+
+    public void removeVehicule(Vehicule vehicule) {
+        vehicules.remove(vehicule);
+        vehicule.setAgence(null);
+    }
 }

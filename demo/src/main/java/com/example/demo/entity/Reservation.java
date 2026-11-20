@@ -40,4 +40,16 @@ public class Reservation {
     @OneToOne
     @JoinColumn(name = "contrat_id")
     private Contrat contrat;
+
+    public void etablirContrat(Contrat nouveauContrat) {
+        this.contrat = nouveauContrat;
+        nouveauContrat.setReservation(this);
+    }
+
+    public void retirerContrat() {
+        if (contrat != null) {
+            contrat.setReservation(null);
+            contrat = null;
+        }
+    }
 }
