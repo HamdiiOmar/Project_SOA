@@ -9,7 +9,7 @@ Codes HTTP : 404 identifiant inexistant (`ResourceNotFoundException`), 409 opér
 | Relation | Association | Côté propriétaire | `mappedBy` | Cascade | `orphanRemoval` | Chargement |
 |---|---|---|---|---|---|---|
 | Agence – Employe (obligatoire) | OneToMany / ManyToOne | `Employe` (`agence_id`) | `Agence.employes` → `"agence"` | ALL (déjà en place sur `Agence.employes`) | non | `employes` LAZY, `agence` EAGER (défauts JPA) |
-| Vehicule – Equipement (obligatoire) | ManyToMany | `Vehicule` (`@JoinTable vehicule_equipement`) | `Equipement.vehicules` → `"equipements"` | aucune | sans objet | LAZY des deux côtés (défaut) |
+| Vehicule – Equipement (obligatoire) | ManyToMany | `Vehicule` (`@JoinTable vehicule_equipement`) | `Equipement.vehicules` → `"equipements"` | PERSIST (sur `Vehicule.equipements`) | sans objet | LAZY des deux côtés (défaut) |
 | Reservation – Contrat (obligatoire) | OneToOne | `Reservation` (`contrat_id`, unique) | `Contrat.reservation` → `"contrat"` | aucune | non | EAGER (défaut) |
 | Contrat – Paiement (obligatoire) | OneToMany / ManyToOne, composition | `Paiement` (`contrat_id`) | `Contrat.paiements` → `"contrat"` | ALL | **oui** | `paiements` LAZY, `contrat` EAGER |
 | Agence – Vehicule (complémentaire) | OneToMany / ManyToOne | `Vehicule` (`agence_id`) | `Agence.vehicules` → `"agence"` | ALL | non | `vehicules` LAZY, `agence` EAGER |

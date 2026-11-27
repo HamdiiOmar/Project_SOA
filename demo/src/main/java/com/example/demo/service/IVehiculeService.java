@@ -18,4 +18,6 @@ public interface IVehiculeService {
     Vehicule affecterEquipement(Long vehiculeId, Long equipementId);
 
     Vehicule desaffecterEquipement(Long vehiculeId, Long equipementId);
+
+    Vehicule addVehiculeAndAssignToAgence(Vehicule vehicule, Long agenceId);
 }

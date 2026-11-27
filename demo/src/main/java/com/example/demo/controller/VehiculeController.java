@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -70,5 +72,18 @@ public class VehiculeController {
     @DeleteMapping("/{id}/equipements/{equipementId}")
     public Vehicule desaffecterEquipement(@PathVariable Long id, @PathVariable Long equipementId) {
         return vehiculeService.desaffecterEquipement(id, equipementId);
+    }
+
+    @Operation(summary = "Crée un véhicule et l'affecte à une agence")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Véhicule créé et affecté"),
+            @ApiResponse(responseCode = "400", description = "Données invalides"),
+            @ApiResponse(responseCode = "404", description = "Ressource introuvable")
+    })
+    @PostMapping("/agence/{agenceId}")
+    public ResponseEntity<Vehicule> addVehiculeAndAssignToAgence(@PathVariable Long agenceId,
+            @RequestBody Vehicule vehicule) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(vehiculeService.addVehiculeAndAssignToAgence(vehicule, agenceId));
     }
 }

@@ -56,7 +56,7 @@ public class Vehicule {
     @OneToMany(mappedBy = "vehicule", cascade = CascadeType.ALL)
     private List<Maintenance> maintenances = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
         name = "vehicule_equipement",
         joinColumns = @JoinColumn(name = "vehicule_id"),

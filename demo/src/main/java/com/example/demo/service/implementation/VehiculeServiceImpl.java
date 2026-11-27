@@ -1,9 +1,11 @@
 package com.example.demo.service.implementation;
 
+import com.example.demo.entity.Agence;
 import com.example.demo.entity.Equipement;
 import com.example.demo.entity.Vehicule;
 import com.example.demo.exception.BusinessRuleException;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.IAgenceRepository;
 import com.example.demo.repository.IEquipementRepository;
 import com.example.demo.repository.IVehiculeRepository;
 import com.example.demo.service.IVehiculeService;
@@ -17,10 +19,12 @@ public class VehiculeServiceImpl implements IVehiculeService {
 
     private final IVehiculeRepository vehiculeRepository;
     private final IEquipementRepository equipementRepository;
+    private final IAgenceRepository agenceRepository;
 
-    public VehiculeServiceImpl(IVehiculeRepository vehiculeRepository, IEquipementRepository equipementRepository) {
+    public VehiculeServiceImpl(IVehiculeRepository vehiculeRepository, IEquipementRepository equipementRepository, IAgenceRepository agenceRepository) {
         this.vehiculeRepository = vehiculeRepository;
         this.equipementRepository = equipementRepository;
+        this.agenceRepository = agenceRepository;
     }
 
     @Override
@@ -93,6 +97,15 @@ public class VehiculeServiceImpl implements IVehiculeService {
         }
         vehicule.removeEquipement(equipement);
         return vehicule;
+    }
+
+    @Override
+    public Vehicule addVehiculeAndAssignToAgence(Vehicule vehicule, Long agenceId) {
+        Agence agence = agenceRepository.findById(agenceId)
+                .orElseThrow(() -> new ResourceNotFoundException("Agence", agenceId));
+        Vehicule nouveau = create(vehicule);
+        agence.addVehicule(nouveau);
+        return nouveau;
     }
 
     private Equipement chargerEquipement(Long id) {
